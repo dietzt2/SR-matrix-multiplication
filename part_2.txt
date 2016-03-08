@@ -1,0 +1,53 @@
+#written by: Tyler Dietz
+#Set one Part 2
+resource matrix()
+  var n:int; getarg(1,n)
+  var a[0:n-1,0:n-1], b[0:n-1, 0:n-1]: real
+  var c[0:n-1, 0:n-1]:  real := ([n] ([n] 0.0) )
+
+  #input a and b
+  fa i:=0 to n-1 ->
+    fa j:=0 to n-1 ->
+      writes ("Enter a value for matrix A position [",i,",",j,"]:")
+      read(a[i,j])
+    af
+  af
+
+  fa i:= 0 to n-1 ->
+    fa j:=0 to n-1 ->
+      writes ("Enter a value for matrix B position [",i,",",j,"]:")
+      read(b[i,j])
+    af
+  af
+
+  fa i:= 0 to n-1 ->
+    fa j:=0 to n-1 ->
+      #compute inner product
+      fa k:=0 to n-1 ->
+        c[i][j]:= c[i,j] + a[i,k]*b[k,j]
+      af
+    af
+  af
+
+  #print A
+  fa i:=0 to n-1 ->
+    fa j:=0 to n-1 ->
+      write("A index [",i,",",j,"]:",a[i,j])
+    af
+  af
+
+  #print B
+  fa i:=0 to n-1 ->
+    fa j:=0 to n-1 ->
+      write("B index [",i,",",j,"]:",b[i,j])
+    af
+  af
+
+  #print result
+  fa i:=0 to n-1 ->
+    fa j:=0 to n-1 ->
+      write("C index [",i,",",j,"]:",c[i,j])
+    af
+  af
+
+end matrix
