@@ -1,0 +1,71 @@
+#Written by: Tyler Dietz
+#File: CPSC330 Set 1 Part 3
+resource matrix_mult()
+  #read command line argument
+  var n:int; getarg(1,n)
+  var a[0:n-1,0:n-1], b[0:n-1, 0:n-1]: real
+  var c[0:n-1, 0:n-1]:  real := ([n] ([n] 0.0) )
+
+  #input p for number of worker processes
+  #p must be a factor of n
+  var p:int
+  writes("Enter a value for p and hit enter: ")
+  read (p)
+  do n%p !=0 ->
+    write("Error. N is ",n,", p must be a factor of n.")
+    writes("Enter a value for p and hit enter: ")
+    read(p)
+  od
+
+  #input a and b
+
+  fa i:=0 to n-1 ->
+    fa j:=0 to n-1 ->
+      writes ("Enter a value for matrix A position [",i,",",j,"]:")
+      read(a[i,j])
+    af
+  af
+
+  fa i:= 0 to n-1 ->
+    fa j:=0 to n-1 ->
+      writes ("Enter a value for matrix B position [",i,",",j,"]:")
+      read(b[i,j])
+    af
+  af  
+
+  process worker (w:=1 to p)
+    #compute inner product
+    var first:int; first := (w-1) * n/p
+    var last:int; last := first + n/p -1
+    fa i:= first to last ->
+      fa j:=0 to n-1 ->
+        fa k:=0 to n-1 ->
+          c[i][j]:= c[i,j] + a[i,k]*b[k,j]
+        af
+      af
+    af
+  end worker
+
+  #print A
+  fa i:=0 to n-1 ->
+    fa j:=0 to n-1 ->
+      write("A index [",i,",",j,"]:",a[i,j])
+    af
+  af
+
+  #print B
+  fa i:=0 to n-1 ->
+    fa j:=0 to n-1 ->
+      write("B index [",i,",",j,"]:",b[i,j])
+    af
+  af
+
+  #print result
+  final
+    fa i:=0 to n-1 ->
+      fa j:=0 to n-1 ->
+        write("C index [",i,",",j,"]:",c[i,j])
+      af
+    af
+  end
+end matrix_mult
