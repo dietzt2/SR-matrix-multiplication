@@ -1,0 +1,61 @@
+#written by:Tyler Dietz
+#file: Set 1 Part 4
+resource matrix_mult()
+
+  var n:int; getarg(1,n)
+  #set up message channels
+  op a_chan[1:n](a[n]:real),  
+     b_chan[1:n](b[n,n]:real),
+     c_chan[1:n](c[n]:real)
+  op input(var x[n,n]:real)
+  op shows(x[n,n]:real)
+  
+  process coordinator
+    var a[n,n] := ([n]([n] 1.0)),
+        b[n,n] := ([n]([n] 1.0)), 
+        c[n,n] :real
+    
+    input(a);input(b)
+    write("A"); shows(a)
+    write("B"); shows(b)
+    co (i:=1 to n)
+      send a_chan[i](a[i])
+    // (i:= 1 to n)
+      send b_chan[i](b)
+    oc
+    fa j:=1 to n ->
+      receive c_chan[j](c[j])
+    af
+    write("C"); shows(c)
+  end
+
+  process worker (i:= 1 to n)
+    var sum:real
+    var a[n],c[n],b[n,n]:real
+    receive a_chan [i](a)
+    receive b_chan[i](b)
+    fa j:=1 to n ->
+      sum:=0
+      fa k:=1 to n -> sum +:=a[k]*b[k,j] af
+      c[j] := sum
+    af
+    send c_chan[i](c)
+  end
+
+  proc input(x)
+    fa i:=1 to n-> 
+      fa j:=1 to n ->
+        writes("Enter a value for position [",i,",",j,"]:")
+        read(x[i,j])
+      af
+    af
+  end
+
+  proc shows(x)
+    fa i:=1 to n-> 
+      fa j:=1 to n ->
+        write (" index [",i,",",j,"]:", x[i,j])
+      af
+    af
+  end
+end
